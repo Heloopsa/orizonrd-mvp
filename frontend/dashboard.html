@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard - OrizonRD</title>
+  
+<!-- FAVICON INLINE (sin archivos extra) -->
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%2300b4d8'/><text x='50%' y='55%' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-weight='bold' font-size='20' fill='%230f1115'>O</text></svg>">
+
+<!-- SEO BÁSICO -->
+<meta name="description" content="OrizonRD: El primer marketplace inmobiliario de República Dominicana con verificación legal, datos reales y agentes certificados. Compra, vende o invierte con confianza.">
+<meta name="keywords" content="inmuebles republica dominicana, venta casas punta cana, apartamento santo domingo, invertir en rd, orizonrd, propiedades verificadas">
+<meta name="author" content="OrizonRD">
+<meta name="robots" content="index, follow">
+
+<!-- OPEN GRAPH (WhatsApp, LinkedIn, Facebook) -->
+<meta property="og:title" content="OrizonRD — Marketplace Inmobiliario Verificado">
+<meta property="og:description" content="Compra, vende o invierte en República Dominicana con datos reales, verificación legal y agentes certificados.">
+<meta property="og:image" content="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1200&q=80">
+<meta property="og:url" content="https://orizonrd.vercel.app">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: { onyx: '#0f1115', cerulean: '#00b4d8', frost: '#e0e7ff', onyxLight: '#1a1d24' },
+          fontFamily: { sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'] }
+        }
+      }
+    }
+  </script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <style>
+    :root { --glass-bg: rgba(255,255,255,0.03); --glass-border: rgba(255,255,255,0.08); }
+    .glass { background: var(--glass-bg); backdrop-filter: blur(12px); border: 1px solid var(--glass-border); }
+    .glass-strong { background: rgba(15,17,21,0.85); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.1); }
+    
+    select option { background-color: #0f1115; color: #ffffff; }
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: #0f1115; }
+    ::-webkit-scrollbar-thumb { background: #1e2028; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #2d3748; }
+
+    .fade-in { animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+    
+    .stat-card { transition: all 0.3s ease; }
+    .stat-card:hover { transform: translateY(-2px); border-color: rgba(0,180,216,0.3); }
+    
+    .toast { transform: translateY(120%); transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
+    .toast.show { transform: translateY(0); }
+    
+    .tab-btn.active { background: rgba(0,180,216,0.15); color: #00b4d8; border-color: rgba(0,180,216,0.3); }
+    .tab-btn:not(.active):hover { background: rgba(255,255,255,0.05); }
+    
+    .property-status-active { background: rgba(16,185,129,0.2); color: #34d399; border: 1px solid rgba(16,185,129,0.3); }
+    .property-status-pending { background: rgba(245,158,11,0.2); color: #fbbf24; border: 1px solid rgba(245,158,11,0.3); }
+    .property-status-expired { background: rgba(239,68,68,0.2); color: #f87171; border: 1px solid rgba(239,68,68,0.3); }
+  </style>
+</head>
+<body class="bg-onyx text-white antialiased selection:bg-cerulean/30 selection:text-white">
+
+  <!-- NAVBAR -->
+  <nav class="fixed top-0 left-0 right-0 z-50 glass-strong border-b border-white/5">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+    <a href="index.html" class="flex items-center gap-2">
+      <div class="w-8 h-8 bg-cerulean rounded-lg flex items-center justify-center font-bold text-onyx">O</div>
+      <span class="text-xl font-bold tracking-tight">Orizon<span class="text-cerulean">RD</span></span>
+    </a>
+    <div class="hidden md:flex items-center gap-6 text-sm text-frost">
+      <a href="propiedades.html" class="hover:text-white transition">Propiedades</a>
+      <a href="contacto.html" class="hover:text-white transition">Agentes</a>
+      <a href="asesoria.html" class="hover:text-white transition">Asesoría</a>
+      <a href="financiacion.html" class="hover:text-white transition">Financiación</a>
+      <a href="vende.html" class="bg-cerulean/10 text-cerulean px-4 py-2 rounded-full font-medium hover:bg-cerulean hover:text-onyx transition">Publicar</a>
+    </div>
+    <div class="flex items-center gap-3">
+      <a href="favoritos.html" class="text-frost hover:text-white transition"><i data-lucide="heart" class="w-5 h-5"></i></a>
+      <a href="dashboard.html" class="text-frost hover:text-white transition"><i data-lucide="user" class="w-5 h-5"></i></a>
+      <button class="md:hidden text-white"><i data-lucide="menu" class="w-5 h-5"></i></button>
+    </div>
+  </div>
+</nav>
+
+  <!-- MAIN DASHBOARD -->
+  <main class="pt-20 pb-12 min-h-screen bg-gradient-to-b from-onyx to-onyxLight/30">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <!-- HEADER & PROFILE -->
+      <header class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8 fade-in">
+        <div>
+          <h1 class="text-2xl sm:text-3xl font-bold mb-1">Hola, <span class="text-cerulean">Carlos M.</span></h1>
+          <p class="text-sm text-frost">Panel de control · Plan Pro Activo · Último acceso: hace 2 horas</p>
+        </div>
+        <button onclick="openModal('profile')" class="group flex items-center gap-3 bg-white/[.04] hover:bg-white/[.08] border border-white/[.08] rounded-xl px-4 py-2.5 transition">
+          <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=100&q=80" class="w-9 h-9 rounded-full object-cover border border-white/20 group-hover:border-cerulean/50 transition">
+          <div class="text-left hidden sm:block">
+            <p class="text-sm font-semibold">Mi Perfil</p>
+            <p class="text-xs text-frost">Editar datos · Privacidad</p>
+          </div>
+          <i data-lucide="settings" class="w-4 h-4 text-frost group-hover:text-cerulean transition"></i>
+        </button>
+      </header>
+
+      <!-- QUICK STATS -->
+      <section class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8 fade-in">
+        <div class="glass rounded-2xl p-4 stat-card">
+          <div class="flex justify-between items-start mb-2">
+            <p class="text-xs text-frost uppercase tracking-wider">Publicaciones Activas</p>
+            <i data-lucide="building-2" class="w-4 h-4 text-cerulean"></i>
+          </div>
+          <p class="text-2xl font-bold">4 <span class="text-sm text-frost font-normal">/ 5 max</span></p>
+          <div class="mt-2 w-full bg-white/5 h-1.5 rounded-full overflow-hidden"><div class="bg-cerulean h-full rounded-full" style="width: 80%"></div></div>
+        </div>
+        <div class="glass rounded-2xl p-4 stat-card">
+          <div class="flex justify-between items-start mb-2">
+            <p class="text-xs text-frost uppercase tracking-wider">Vistas Totales</p>
+            <i data-lucide="eye" class="w-4 h-4 text-amber-400"></i>
+          </div>
+          <p class="text-2xl font-bold">1,284</p>
+          <p class="text-xs text-emerald-400 mt-1">↑ +12% vs semana anterior</p>
+        </div>
+        <div class="glass rounded-2xl p-4 stat-card">
+          <div class="flex justify-between items-start mb-2">
+            <p class="text-xs text-frost uppercase tracking-wider">Guardados / Favoritos</p>
+            <i data-lucide="heart" class="w-4 h-4 text-pink-400"></i>
+          </div>
+          <p class="text-2xl font-bold">89</p>
+          <p class="text-xs text-frost mt-1">Interacción alta del mercado</p>
+        </div>
+        <div class="glass rounded-2xl p-4 stat-card">
+          <div class="flex justify-between items-start mb-2">
+            <p class="text-xs text-frost uppercase tracking-wider">Tasa de Respuesta</p>
+            <i data-lucide="message-square" class="w-4 h-4 text-emerald-400"></i>
+          </div>
+          <p class="text-2xl font-bold">94%</p>
+          <p class="text-xs text-frost mt-1">Tiempo promedio: 1.4h</p>
+        </div>
+      </section>
+
+      <!-- TAB NAVIGATION -->
+      <div class="flex gap-2 border-b border-white/10 overflow-x-auto pb-1 mb-6 no-scrollbar">
+        <button class="tab-btn active px-4 py-2 text-sm font-medium rounded-t-xl border border-transparent whitespace-nowrap transition" data-tab="propiedades">Mis Propiedades</button>
+        <button class="tab-btn px-4 py-2 text-sm font-medium rounded-t-xl border border-transparent whitespace-nowrap transition" data-tab="mensajes">Mensajes <span class="ml-1.5 bg-cerulean text-onyx text-[10px] font-bold px-1.5 py-0.5 rounded-full">3</span></button>
+        <button class="tab-btn px-4 py-2 text-sm font-medium rounded-t-xl border border-transparent whitespace-nowrap transition" data-tab="ofertas">Ofertas & Leads</button>
+        <button class="tab-btn px-4 py-2 text-sm font-medium rounded-t-xl border border-transparent whitespace-nowrap transition" data-tab="analiticas">Analíticas</button>
+        <button class="tab-btn px-4 py-2 text-sm font-medium rounded-t-xl border border-transparent whitespace-nowrap transition" data-tab="plan">Plan & Facturación</button>
+      </div>
+
+      <!-- CONTENT PANELS -->
+      <div class="min-h-[50vh]">
+        
+        <!-- PROPIEDADES -->
+        <div id="tab-propiedades" class="tab-content fade-in space-y-4">
+          <div class="flex justify-between items-center mb-4">
+            <h2 class="text-lg font-bold">Inventario Actual</h2>
+            <a href="vende.html" class="text-sm bg-cerulean hover:bg-cerulean/90 text-onyx font-semibold px-4 py-2 rounded-xl transition flex items-center gap-2"><i data-lucide="plus" class="w-4 h-4"></i> Nueva Publicación</a>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="propertiesGrid">
+            <!-- Rendered by JS -->
+          </div>
+        </div>
+
+        <!-- MENSAJES -->
+        <div id="tab-mensajes" class="tab-content hidden fade-in space-y-4">
+          <div class="glass rounded-2xl overflow-hidden">
+            <div class="divide-y divide-white/5">
+              <div class="p-4 hover:bg-white/[.03] cursor-pointer flex items-center gap-3" onclick="openMessageView(1)">
+                <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=100&q=80" class="w-10 h-10 rounded-full object-cover">
+                <div class="flex-1 min-w-0">
+                  <div class="flex justify-between items-center">
+                    <h4 class="font-semibold text-sm">Andrés Castillo (Agente)</h4>
+                    <span class="text-xs text-frost">14:23</span>
+                  </div>
+                  <p class="text-xs text-frost truncate">¿Podrías enviarme los planos técnicos del terreno en Samaná?</p>
+                </div>
+                <span class="w-2 h-2 bg-cerulean rounded-full"></span>
+              </div>
+              <div class="p-4 hover:bg-white/[.03] cursor-pointer flex items-center gap-3" onclick="openMessageView(2)">
+                <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=100&q=80" class="w-10 h-10 rounded-full object-cover">
+                <div class="flex-1 min-w-0">
+                  <div class="flex justify-between items-center">
+                    <h4 class="font-semibold text-sm">María Rodríguez</h4>
+                    <span class="text-xs text-frost">Ayer</span>
+                  </div>
+                  <p class="text-xs text-frost truncate">Gracias por la info. ¿Hay disponibilidad para visita virtual esta semana?</p>
+                </div>
+              </div>
+              <div class="p-4 hover:bg-white/[.03] cursor-pointer flex items-center gap-3" onclick="openMessageView(3)">
+                <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=100&q=80" class="w-10 h-10 rounded-full object-cover">
+                <div class="flex-1 min-w-0">
+                  <div class="flex justify-between items-center">
+                    <h4 class="font-semibold text-sm">Soporte OrizonRD</h4>
+                    <span class="text-xs text-frost">Lun</span>
+                  </div>
+                  <p class="text-xs text-frost truncate">Tu propiedad ID-442 ha completado verificación legal. ✅</p>
+                </div>
+                <span class="w-2 h-2 bg-cerulean rounded-full"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- OFERTAS & LEADS -->
+        <div id="tab-ofertas" class="tab-content hidden fade-in space-y-4">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass rounded-2xl p-5">
+              <div class="flex items-center gap-3 mb-3">
+                <div class="w-10 h-10 bg-green-500/10 rounded-lg flex items-center justify-center"><i data-lucide="trending-up" class="w-5 h-5 text-green-400"></i></div>
+                <div><h3 class="font-bold">Intereses Captados</h3><p class="text-xs text-frost">Últimos 30 días</p></div>
+              </div>
+              <div class="space-y-3">
+                <div class="bg-white/[.03] p-3 rounded-lg flex justify-between items-center">
+                  <div><p class="text-sm font-medium">Villa Bávaro Premium</p><p class="text-xs text-frost">Contacto interesado vía WhatsApp</p></div>
+                  <span class="text-xs bg-cerulean/20 text-cerulean px-2 py-1 rounded">Alta intención</span>
+                </div>
+                <div class="bg-white/[.03] p-3 rounded-lg flex justify-between items-center">
+                  <div><p class="text-sm font-medium">Penthouse SD Este</p><p class="text-xs text-frost">Solicitud de financiamiento</p></div>
+                  <span class="text-xs bg-amber-500/20 text-amber-400 px-2 py-1 rounded">En negociación</span>
+                </div>
+              </div>
+            </div>
+            <div class="glass rounded-2xl p-5">
+              <div class="flex items-center gap-3 mb-3">
+                <div class="w-10 h-10 bg-blue-500/10 rounded-lg flex items-center justify-center"><i data-lucide="percent" class="w-5 h-5 text-blue-400"></i></div>
+                <div><h3 class="font-bold">Conversiones de Plan Pro</h3><p class="text-xs text-frost">Leads → Contacto Real</p></div>
+              </div>
+              <div class="grid grid-cols-2 gap-3">
+                <div class="bg-white/[.03] p-3 rounded-lg text-center"><p class="text-2xl font-bold text-cerulean">8.4%</p><p class="text-xs text-frost">Tasa actual</p></div>
+                <div class="bg-white/[.03] p-3 rounded-lg text-center"><p class="text-2xl font-bold text-emerald-400">$11.2</p><p class="text-xs text-frost">CAC por lead</p></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ANALÍTICAS -->
+        <div id="tab-analiticas" class="tab-content hidden fade-in space-y-4">
+          <div class="glass rounded-2xl p-6">
+            <h3 class="font-bold mb-4">Rendimiento por Zona (Últimos 90 días)</h3>
+            <div class="space-y-4">
+              <div>
+                <div class="flex justify-between text-xs mb-1"><span>Punta Cana</span><span class="text-cerulean">+24% interés</span></div>
+                <div class="w-full bg-white/5 h-2 rounded-full"><div class="bg-cerulean h-full rounded-full" style="width: 78%"></div></div>
+              </div>
+              <div>
+                <div class="flex justify-between text-xs mb-1"><span>Santo Domingo</span><span class="text-frost">+8% interés</span></div>
+                <div class="w-full bg-white/5 h-2 rounded-full"><div class="bg-frost h-full rounded-full" style="width: 45%"></div></div>
+              </div>
+              <div>
+                <div class="flex justify-between text-xs mb-1"><span>Samaná</span><span class="text-frost">Estable</span></div>
+                <div class="w-full bg-white/5 h-2 rounded-full"><div class="bg-frost h-full rounded-full" style="width: 32%"></div></div>
+              </div>
+            </div>
+            <div class="mt-6 pt-4 border-t border-white/5 flex justify-between text-xs text-frost">
+              <span>Datos normalizados según índice ORIZONRD</span>
+              <button class="text-cerulean hover:underline">Descargar reporte PDF ↗</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- PLAN & FACTURACIÓN -->
+        <div id="tab-plan" class="tab-content hidden fade-in space-y-4">
+          <div class="glass rounded-2xl p-6 relative overflow-hidden">
+            <div class="absolute top-0 right-0 bg-cerulean/20 text-cerulean text-xs font-bold px-3 py-1 rounded-bl-xl">PLAN ACTIVO</div>
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4">
+              <div>
+                <h3 class="text-xl font-bold">Plan Pro B2B</h3>
+                <p class="text-sm text-frost">3-5 publicaciones · Badge verificado · Analytics · Soporte prioritario</p>
+              </div>
+              <span class="text-2xl font-bold text-cerulean">3,500 DOP <span class="text-sm text-frost font-normal">/mes</span></span>
+            </div>
+            <div class="bg-white/[.03] rounded-xl p-4 mb-4">
+              <p class="text-xs text-frost mb-2">Renovación automática</p>
+              <div class="flex items-center justify-between">
+                <span class="text-sm font-medium">Próximo cobro: 14 Feb 2026</span>
+                <button class="text-xs text-cerulean underline">Cambiar método de pago</button>
+              </div>
+            </div>
+            <div class="flex flex-wrap gap-3">
+              <button onclick="showToast('Actualización de plan solicitada 📄')" class="bg-cerulean hover:bg-cerulean/90 text-onyx font-semibold px-5 py-2.5 rounded-xl transition text-sm">Mejorar a Enterprise</button>
+              <button onclick="showToast('Se enviará correo de confirmación de cancelación. ⚠️')" class="border border-white/10 hover:bg-white/[.05] text-white font-medium px-5 py-2.5 rounded-xl transition text-sm">Reducir / Cancelar</button>
+            </div>
+          </div>
+          
+          <div class="glass rounded-2xl p-6">
+            <h3 class="font-bold mb-4 flex items-center gap-2"><i data-lucide="shield-check" class="w-5 h-5 text-emerald-400"></i> Cumplimiento & Datos (Ley 172-13)</h3>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+              <div class="bg-white/[.03] p-3 rounded-lg"><p class="text-frost mb-1">Base de datos almacenada</p><p class="font-medium">Encriptación AES-256 (AWS S3)</p></div>
+              <div class="bg-white/[.03] p-3 rounded-lg"><p class="text-frost mb-1">Historial de consentimientos</p><p class="font-medium">Disponible para auditoría</p></div>
+            </div>
+            <button class="mt-4 text-xs bg-white/5 hover:bg-white/10 px-3 py-2 rounded-lg transition">Exportar mis datos personales (JSON)</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="bg-onyx border-t border-white/5 py-10">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-2 md:grid-cols-4 gap-8 text-sm">
+    <div>
+      <div class="flex items-center gap-2 mb-4">
+        <div class="w-6 h-6 bg-cerulean rounded flex items-center justify-center font-bold text-onyx text-xs">O</div>
+        <span class="font-bold">Orizon<span class="text-cerulean">RD</span></span>
+      </div>
+      <p class="text-frost text-xs leading-relaxed">Marketplace Inmobiliario Digital de la República Dominicana. Verificado, transparente y con datos reales.</p>
+    </div>
+    <div>
+      <h4 class="font-semibold mb-3">Plataforma</h4>
+      <ul class="space-y-2 text-frost text-xs">
+        <li><a href="propiedades.html" class="hover:text-white transition">Explorar Propiedades</a></li>
+        <li><a href="vende.html" class="hover:text-white transition">Publicar Propiedad</a></li>
+        <li><a href="asesoria.html" class="hover:text-white transition">Asesoría Certificada</a></li>
+        <li><a href="financiacion.html" class="hover:text-white transition">Calculadora Hipotecaria</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4 class="font-semibold mb-3">Soporte</h4>
+      <ul class="space-y-2 text-frost text-xs">
+        <li><a href="contacto.html" class="hover:text-white transition">Contacto</a></li>
+        <li><a href="#" class="hover:text-white transition">Centro de Ayuda</a></li>
+        <li><a href="#" class="hover:text-white transition">Términos y Privacidad</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4 class="font-semibold mb-3">Contacto</h4>
+      <p class="text-frost text-xs">hola@orizonrd.com</p>
+      <p class="text-frost text-xs">+1 (809) 000-0000</p>
+      <p class="text-frost text-xs mt-2">Santo Domingo, R.D.</p>
+    </div>
+  </div>
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8 pt-6 border-t border-white/5 text-center text-frost/60 text-xs">
+    © 2026 OrizonRD. Todos los derechos reservados. Cumple Ley 172-13 & 429-06
+  </div>
+</footer>
+
+  <!-- MODAL: EDITAR PERFIL -->
+  <div id="modal-profile" class="fixed inset-0 z-[60] hidden items-center justify-center p-4">
+    <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="closeModal('profile')"></div>
+    <div class="relative w-full max-w-md bg-[#15181e] rounded-2xl border border-white/10 p-6 fade-in max-h-[90vh] overflow-y-auto">
+      <button onclick="closeModal('profile')" class="absolute top-4 right-4 p-2 hover:bg-white/10 rounded-full"><i data-lucide="x"></i></button>
+      <h3 class="text-xl font-bold mb-4">Editar Perfil</h3>
+      <form id="contactForm" action="https://formspree.io/f/mbdwzlrl" method="POST" class="space-y-5">
+         <input type="hidden" name="_subject" value="Nuevo Lead OrizonRD">
+              <input type="hidden" name="_next" value="dashboard.html">
+        <div class="flex items-center gap-4 mb-4">
+          <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=100&q=80" class="w-16 h-16 rounded-full object-cover border-2 border-cerulean">
+          <div>
+            <p class="text-sm font-medium">Foto de perfil</p>
+            <button type="button" class="text-xs text-cerulean underline">Cambiar imagen</button>
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-4">
+          <input type="text" value="Carlos" required class="bg-white/[.04] border border-white/[.08] rounded-xl px-4 py-2.5 text-sm text-white outline-none focus:border-cerulean">
+          <input type="text" value="Mendoza" required class="bg-white/[.04] border border-white/[.08] rounded-xl px-4 py-2.5 text-sm text-white outline-none focus:border-cerulean">
+        </div>
+        <input type="email" value="carlos.m@correo.com" readonly class="bg-white/[.02] border border-white/[.06] rounded-xl px-4 py-2.5 text-sm text-frost cursor-not-allowed" title="El email se gestiona desde configuración de cuenta">
+        <select class="w-full bg-white/[.04] border border-white/[.08] rounded-xl px-4 py-2.5 text-sm text-white appearance-none outline-none focus:border-cerulean">
+          <option>Constructora / Inmobiliaria</option>
+          <option>Inversor Individual</option>
+          <option>Agente Independiente</option>
+        </select>
+        <div class="flex items-center gap-2 pt-2">
+          <input type="checkbox" id="alerts" checked class="accent-cerulean">
+          <label for="alerts" class="text-xs text-frost">Recibir alertas de precios y nuevas propiedades guardadas</label>
+        </div>
+        <button type="submit" class="w-full bg-cerulean hover:bg-cerulean/90 text-onyx font-bold py-2.5 rounded-xl transition">Guardar Cambios</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- TOAST -->
+  <div id="toast" class="fixed bottom-6 right-6 z-50 toast glass-strong rounded-xl px-5 py-3 flex items-center gap-3 shadow-2xl">
+    <i data-lucide="check-circle" class="w-5 h-5 text-emerald-400"></i>
+    <span id="toastMsg" class="text-sm font-medium">Acción realizada</span>
+  </div>
+
+  <script>
+    // MOCK DATA
+    const myProperties = [
+      { id: 1, title: "Villa Moderna en Bávaro Premium", price: "$325,000", img: "https://images.unsplash.com/photo-1613490493576-7fde63acd811?auto=format&fit=crop&w=600&q=80", views: 842, saved: 56, status: "active", daysLeft: 28, agent: "Andrés C." },
+      { id: 2, title: "Terreno Beachfront Samaná", price: "$185,000", img: "https://media.vrbo.com/lodging/45000000/44310000/44308900/44308832/e672d486.jpg?impolicy=resizecrop&rw=1200&ra=fit", views: 315, saved: 24, status: "pending", daysLeft: null, agent: "Jorge P." },
+      { id: 3, title: "Condominio All-Inclusive", price: "$210,000", img: "https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?auto=format&fit=crop&w=600&q=80", views: 127, saved: 9, status: "expired", daysLeft: 0, agent: "Raúl M." }
+    ];
+
+    // INIT
+    document.addEventListener('DOMContentLoaded', () => {
+      lucide.createIcons();
+      renderProperties();
+      initTabs();
+      animateStats();
+    });
+
+    // RENDER PROPERTIES
+    function renderProperties() {
+      const grid = document.getElementById('propertiesGrid');
+      grid.innerHTML = myProperties.map(p => {
+        const statusClass = p.status === 'active' ? 'property-status-active' : p.status === 'pending' ? 'property-status-pending' : 'property-status-expired';
+        const statusText = p.status === 'active' ? 'Activa' : p.status === 'pending' ? 'En Verificación' : 'Expirada';
+        return `
+          <div class="glass rounded-2xl overflow-hidden group">
+            <div class="relative h-44 overflow-hidden">
+              <img src="${p.img}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+              <div class="absolute inset-0 bg-gradient-to-t from-onyx/80 to-transparent"></div>
+              <span class="absolute top-3 left-3 ${statusClass} text-xs font-bold px-2.5 py-1 rounded-full">${statusText}</span>
+              <button class="absolute bottom-3 right-3 p-2 bg-white/10 backdrop-blur rounded-full hover:bg-cerulean transition"><i data-lucide="external-link" class="w-4 h-4"></i></button>
+            </div>
+            <div class="p-4">
+              <h3 class="font-semibold text-base mb-1 line-clamp-1">${p.title}</h3>
+              <p class="text-cerulean font-bold mb-3">${p.price}</p>
+              <div class="grid grid-cols-3 gap-2 text-xs text-frost border-t border-white/5 pt-3">
+                <div class="flex flex-col items-center"><i data-lucide="eye" class="w-3.5 h-3.5 mb-1"></i><span>${p.views}</span></div>
+                <div class="flex flex-col items-center"><i data-lucide="heart" class="w-3.5 h-3.5 mb-1"></i><span>${p.saved}</span></div>
+                <div class="flex flex-col items-center"><i data-lucide="clock" class="w-3.5 h-3.5 mb-1"></i><span>${p.daysLeft || '—'}d</span></div>
+              </div>
+              <div class="flex gap-2 mt-4">
+                <button onclick="showToast('Abriendo editor de publicación...')" class="flex-1 bg-white/[.05] hover:bg-white/[.10] py-2 rounded-lg text-xs font-medium transition">Editar</button>
+                <button onclick="showToast('Publicación renovada ✅')" class="flex-1 bg-cerulean/10 hover:bg-cerulean/20 text-cerulean py-2 rounded-lg text-xs font-medium transition">Renovar</button>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+      lucide.createIcons();
+    }
+
+    // TABS LOGIC
+    function initTabs() {
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+          document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
+          btn.classList.add('active');
+          document.getElementById(`tab-${btn.dataset.tab}`).classList.remove('hidden');
+        });
+      });
+    }
+
+    // MODALS
+    function openModal(name) { document.getElementById(`modal-${name}`).classList.remove('hidden'); document.getElementById(`modal-${name}`).classList.add('flex'); }
+    function closeModal(name) { document.getElementById(`modal-${name}`).classList.add('hidden'); document.getElementById(`modal-${name}`).classList.remove('flex'); }
+    function handleProfileUpdate(e) { e.preventDefault(); closeModal('profile'); showToast('Perfil actualizado correctamente 👤'); }
+    function openMessageView(id) { showToast(`Abriendo chat ID-${id}... 💬`); }
+
+    // TOAST
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      document.getElementById('toastMsg').textContent = msg;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 3000);
+    }
+
+    // ANIMATED COUNTERS (Simple)
+    function animateStats() {
+      document.querySelectorAll('.stat-card p.text-2xl.font-bold').forEach(el => {
+        const target = parseInt(el.textContent.replace(/,/g, ''));
+        if(isNaN(target)) return;
+        let current = 0;
+        const step = Math.ceil(target / 40);
+        const interval = setInterval(() => {
+          current += step;
+          if(current >= target) { clearInterval(interval); current = target; }
+          el.textContent = current.toLocaleString();
+        }, 20);
+      });
+    }
+
+    function toggleMobileMenu() { showToast('Menú desplegable activado 📱'); }
+  </script>
+  <script src="data.js"></script>
+  <script>
+  const form = document.getElementById('contactForm');
+  if(form) {
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault(); // Evita recarga de página
+      
+      const btn = form.querySelector('button[type="submit"]');
+      const originalText = btn.innerHTML;
+      const originalClass = btn.className;
+      
+      // Estado: Enviando...
+      btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Enviando...`;
+      btn.disabled = true;
+      lucide.createIcons();
+
+      try {
+        const response = await fetch(form.action, {
+          method: 'POST',
+          body: new FormData(form),
+          headers: { 'Accept': 'application/json' }
+        });
+
+        if (response.ok) {
+          // Estado: Éxito
+          btn.innerHTML = `<i data-lucide="check" class="w-4 h-4"></i> ¡Enviado correctamente!`;
+          btn.className = 'w-full bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-3 rounded-xl transition flex items-center justify-center gap-2';
+          
+          // Redirige o muestra toast
+          setTimeout(() => {
+            window.location.href = form.querySelector('input[name="_next"]')?.value || 'dashboard.html';
+          }, 1200);
+        } else {
+          throw new Error('Error en el servidor');
+        }
+      } catch (error) {
+        // Estado: Error
+        btn.innerHTML = `<i data-lucide="alert-circle" class="w-4 h-4"></i> Error. Intenta de nuevo.`;
+        btn.className = 'w-full bg-red-500 hover:bg-red-600 text-white font-bold py-3 rounded-xl transition flex items-center justify-center gap-2';
+        setTimeout(() => {
+          btn.innerHTML = originalText;
+          btn.className = originalClass;
+          btn.disabled = false;
+          lucide.createIcons();
+        }, 2500);
+      }
+    });
+  }
+</script>
+<script src="utils.js"></script>
+<script src="storage.js"></script>
+</body>
+</html>

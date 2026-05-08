@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Villa Moderna en Bávaro Premium - OrizonRD</title>
+  
+<!-- FAVICON INLINE (sin archivos extra) -->
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%2300b4d8'/><text x='50%' y='55%' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-weight='bold' font-size='20' fill='%230f1115'>O</text></svg>">
+
+<!-- SEO BÁSICO -->
+<meta name="description" content="OrizonRD: El primer marketplace inmobiliario de República Dominicana con verificación legal, datos reales y agentes certificados. Compra, vende o invierte con confianza.">
+<meta name="keywords" content="inmuebles republica dominicana, venta casas punta cana, apartamento santo domingo, invertir en rd, orizonrd, propiedades verificadas">
+<meta name="author" content="OrizonRD">
+<meta name="robots" content="index, follow">
+
+<!-- OPEN GRAPH (WhatsApp, LinkedIn, Facebook) -->
+<meta property="og:title" content="OrizonRD — Marketplace Inmobiliario Verificado">
+<meta property="og:description" content="Compra, vende o invierte en República Dominicana con datos reales, verificación legal y agentes certificados.">
+<meta property="og:image" content="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1200&q=80">
+<meta property="og:url" content="https://orizonrd.vercel.app">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: { onyx: '#0f1115', cerulean: '#00b4d8', frost: '#e0e7ff', onyxLight: '#1a1d24' },
+          fontFamily: { sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'] }
+        }
+      }
+    }
+  </script>
+
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <style>
+    :root { --glass-bg: rgba(255,255,255,0.03); --glass-border: rgba(255,255,255,0.08); }
+    .glass { background: var(--glass-bg); backdrop-filter: blur(12px); border: 1px solid var(--glass-border); }
+    .glass-strong { background: rgba(15,17,21,0.85); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.1); }
+    
+    select option { background-color: #0f1115; color: #ffffff; }
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: #0f1115; }
+    ::-webkit-scrollbar-thumb { background: #1e2028; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #2d3748; }
+
+    .fade-in { animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* Gallery Slide Animation */
+    .gallery-track { transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
+    .thumb-btn.active { border-color: #00b4d8; opacity: 1; transform: scale(1.05); }
+    .thumb-btn { opacity: 0.6; transition: all 0.3s ease; }
+    
+    /* Leaflet Dark Overrides */
+    .leaflet-popup-content-wrapper { background: #1a1d24; color: white; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); }
+    .leaflet-popup-tip { background: #1a1d24; }
+    .leaflet-control-zoom a { background: #1a1d24; color: white; border-color: rgba(255,255,255,0.1) !important; }
+    .leaflet-control-zoom a:hover { background: #00b4d8; color: #0f1115; }
+  </style>
+</head>
+<body class="bg-onyx text-white antialiased selection:bg-cerulean/30 selection:text-white">
+
+  <!-- NAVBAR -->
+<nav class="fixed top-0 left-0 right-0 z-50 glass-strong border-b border-white/5">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+    <a href="index.html" class="flex items-center gap-2">
+      <div class="w-8 h-8 bg-cerulean rounded-lg flex items-center justify-center font-bold text-onyx">O</div>
+      <span class="text-xl font-bold tracking-tight">Orizon<span class="text-cerulean">RD</span></span>
+    </a>
+    <div class="hidden md:flex items-center gap-6 text-sm text-frost">
+      <a href="propiedades.html" class="hover:text-white transition">Propiedades</a>
+      <a href="contacto.html" class="hover:text-white transition">Agentes</a>
+      <a href="asesoria.html" class="hover:text-white transition">Asesoría</a>
+      <a href="financiacion.html" class="hover:text-white transition">Financiación</a>
+      <a href="vende.html" class="bg-cerulean/10 text-cerulean px-4 py-2 rounded-full font-medium hover:bg-cerulean hover:text-onyx transition">Publicar</a>
+    </div>
+    <div class="flex items-center gap-3">
+      <a href="favoritos.html" class="text-frost hover:text-white transition"><i data-lucide="heart" class="w-5 h-5"></i></a>
+      <a href="dashboard.html" class="text-frost hover:text-white transition"><i data-lucide="user" class="w-5 h-5"></i></a>
+      <button class="md:hidden text-white"><i data-lucide="menu" class="w-5 h-5"></i></button>
+    </div>
+  </div>
+</nav>
+
+  <!-- BREADCRUMB & TITLE -->
+  <header class="pt-24 pb-6 bg-gradient-to-b from-onyx to-onyxLight/50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center gap-2 text-xs text-frost mb-2">
+        <a href="#" class="hover:text-white">Inicio</a> <span>/</span> 
+        <a href="#" class="hover:text-white">Propiedades</a> <span>/</span> 
+        <span class="text-white font-medium">Villa Bávaro Premium</span>
+      </div>
+      <h1 class="text-3xl sm:text-4xl font-bold">Villa Moderna en Bávaro Premium</h1>
+      <p class="text-frost mt-1 flex items-center gap-2"><i data-lucide="map-pin" class="w-4 h-4 text-cerulean"></i> Punta Cana · Disponible desde hoy</p>
+    </div>
+  </header>
+
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+      
+      <!-- LEFT CONTENT -->
+      <div class="lg:col-span-8 space-y-8">
+        
+        <!-- GALLERY IMMERSIVE -->
+        <section class="glass rounded-2xl overflow-hidden relative group">
+          <div class="flex flex-col md:flex-row h-[400px] md:h-[500px]">
+            <!-- Thumbnails Left -->
+            <div class="w-full md:w-32 flex md:flex-col gap-2 p-3 bg-onyx/80 overflow-x-auto md:overflow-y-auto no-scrollbar">
+              <button class="thumb-btn active flex-shrink-0 w-16 md:w-full h-20 md:h-24 rounded-lg overflow-hidden border-2 border-transparent" onclick="setSlide(0)">
+                <img src="https://images.unsplash.com/photo-1613490493576-7fde63acd811?auto=format&fit=crop&w=400&q=80" class="w-full h-full object-cover">
+              </button>
+              <button class="thumb-btn flex-shrink-0 w-16 md:w-full h-20 md:h-24 rounded-lg overflow-hidden border-2 border-transparent" onclick="setSlide(1)">
+                <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=400&q=80" class="w-full h-full object-cover">
+              </button>
+              <button class="thumb-btn flex-shrink-0 w-16 md:w-full h-20 md:h-24 rounded-lg overflow-hidden border-2 border-transparent" onclick="setSlide(2)">
+                <img src="https://images.unsplash.com/photo-1600607687939-ce8a63acd811?auto=format&fit=crop&w=400&q=80" class="w-full h-full object-cover">
+              </button>
+              <button class="thumb-btn flex-shrink-0 w-16 md:w-full h-20 md:h-24 rounded-lg overflow-hidden border-2 border-transparent" onclick="setSlide(3)">
+                <img src="https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?auto=format&fit=crop&w=400&q=80" class="w-full h-full object-cover">
+              </button>
+            </div>
+            
+            <!-- Main Image -->
+            <div class="relative flex-1 overflow-hidden">
+              <div id="galleryTrack" class="gallery-track flex w-full h-full">
+                <div class="w-full h-full flex-shrink-0"><img src="https://images.unsplash.com/photo-1613490493576-7fde63acd811?auto=format&fit=crop&w=1200&q=80" class="w-full h-full object-cover"></div>
+                <div class="w-full h-full flex-shrink-0"><img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80" class="w-full h-full object-cover"></div>
+                <div class="w-full h-full flex-shrink-0"><img src="https://images.unsplash.com/photo-1600607687939-ce8a63acd811?auto=format&fit=crop&w=1200&q=80" class="w-full h-full object-cover"></div>
+                <div class="w-full h-full flex-shrink-0"><img src="https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?auto=format&fit=crop&w=1200&q=80" class="w-full h-full object-cover"></div>
+              </div>
+              
+              <span class="absolute top-4 left-4 bg-cerulean/90 text-onyx text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1">
+                <i data-lucide="camera" class="w-3.5 h-3.5"></i> TOUR 360° DISPONIBLE
+              </span>
+              
+              <button onclick="prevSlide()" class="absolute left-4 top-1/2 -translate-y-1/2 p-3 bg-black/40 backdrop-blur rounded-full hover:bg-cerulean transition opacity-0 group-hover:opacity-100"><i data-lucide="chevron-left"></i></button>
+              <button onclick="nextSlide()" class="absolute right-4 top-1/2 -translate-y-1/2 p-3 bg-black/40 backdrop-blur rounded-full hover:bg-cerulean transition opacity-0 group-hover:opacity-100"><i data-lucide="chevron-right"></i></button>
+            </div>
+          </div>
+        </section>
+
+        <!-- TABS INTELIGENTES -->
+        <section class="space-y-4">
+          <div class="flex gap-2 border-b border-white/10 pb-2 overflow-x-auto">
+            <button class="tab-btn px-4 py-2 text-sm font-medium text-cerulean border-b-2 border-cerulean" onclick="switchTab('desc')">Descripción</button>
+            <button class="tab-btn px-4 py-2 text-sm font-medium text-frost hover:text-white" onclick="switchTab('amenities')">Amenities</button>
+            <button class="tab-btn px-4 py-2 text-sm font-medium text-frost hover:text-white" onclick="switchTab('investment')">Inversión</button>
+            <button class="tab-btn px-4 py-2 text-sm font-medium text-frost hover:text-white" onclick="switchTab('legal')">Verificación Legal</button>
+          </div>
+
+          <div id="tab-content" class="fade-in">
+            <!-- Content injected by JS -->
+          </div>
+        </section>
+
+        <!-- MAPA OSCURO -->
+        <section class="glass rounded-2xl p-1 overflow-hidden">
+          <div class="bg-onyx p-4 flex justify-between items-center rounded-xl">
+            <div>
+              <h3 class="font-bold">Ubicación Estratégica</h3>
+              <p class="text-sm text-frost">Bávaro Premium, Punta Cana · Zona Residencial Acreditada</p>
+            </div>
+            <button class="text-xs bg-white/5 hover:bg-white/10 px-3 py-1.5 rounded-lg transition">Ver en Google Maps ↗</button>
+          </div>
+          <div id="map" class="h-[400px] w-full"></div>
+        </section>
+
+        <!-- PROPIEDADES SIMILARES -->
+        <section>
+          <h3 class="text-xl font-bold mb-4">Propiedades Similares</h3>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <a href="#" class="glass rounded-xl overflow-hidden hover:scale-[1.02] transition group">
+              <div class="h-36 overflow-hidden"><img src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=600&q=80" class="w-full h-full object-cover group-hover:scale-110 transition"></div>
+              <div class="p-3">
+                <p class="font-semibold text-sm">Villa Golf Cap Cana</p>
+                <p class="text-cerulean text-sm">$850,000</p>
+              </div>
+            </a>
+            <a href="#" class="glass rounded-xl overflow-hidden hover:scale-[1.02] transition group">
+              <div class="h-36 overflow-hidden"><img src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=600&q=80" class="w-full h-full object-cover group-hover:scale-110 transition"></div>
+              <div class="p-3">
+                <p class="font-semibold text-sm">Penthouse SD Este</p>
+                <p class="text-cerulean text-sm">$489,000</p>
+              </div>
+            </a>
+            <a href="#" class="glass rounded-xl overflow-hidden hover:scale-[1.02] transition group">
+              <div class="h-36 overflow-hidden"><img src="https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?auto=format&fit=crop&w=600&q=80" class="w-full h-full object-cover group-hover:scale-110 transition"></div>
+              <div class="p-3">
+                <p class="font-semibold text-sm">Condo All-Inclusive</p>
+                <p class="text-cerulean text-sm">$210,000</p>
+              </div>
+            </a>
+          </div>
+        </section>
+      </div>
+
+      <!-- STICKY SIDEBAR -->
+      <aside class="lg:col-span-4 space-y-6">
+        <div class="sticky top-24 space-y-6">
+          <!-- Price & CTA -->
+          <div class="glass rounded-2xl p-6">
+            <div class="flex justify-between items-start mb-4">
+              <div>
+                <p class="text-xs text-frost uppercase tracking-wider">Precio de venta</p>
+                <h2 class="text-3xl font-bold text-white mt-1">$325,000</h2>
+              </div>
+              <span class="bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-xs font-bold px-2 py-1 rounded-full">VERIFICADO</span>
+            </div>
+            
+            <button onclick="openModal('booking')" class="w-full bg-cerulean hover:bg-cerulean/90 text-onyx font-bold py-3 rounded-xl mb-3 transition flex items-center justify-center gap-2">
+              <i data-lucide="calendar-check" class="w-4 h-4"></i> Agendar Visita
+            </button>
+            <a href="https://wa.me/18090000000?text=Hola%2C%20me%20interesa%20la%20Villa%20B%C3%A1varo%20Premium" target="_blank" class="block w-full bg-green-600 hover:bg-green-500 text-white font-bold py-3 rounded-xl mb-4 transition flex items-center justify-center gap-2">
+              <i data-lucide="message-circle" class="w-4 h-4"></i> Contactar por WhatsApp
+            </a>
+
+            <div class="border-t border-white/10 pt-4">
+              <h4 class="text-sm font-semibold mb-3">Consulta rápida</h4>
+              <form id="contactForm" action="https://formspree.io/f/mbdwzlrl" method="POST" class="space-y-3">
+                 <input type="hidden" name="_subject" value="Nuevo Lead OrizonRD">
+              <input type="hidden" name="_next" value="dashboard.html">
+                <input type="text" placeholder="Nombre completo" required class="w-full bg-white/[.04] border border-white/[.08] rounded-xl px-4 py-2.5 text-sm text-white focus:ring-1 focus:ring-cerulean outline-none">
+                <input type="email" placeholder="Email" required class="w-full bg-white/[.04] border border-white/[.08] rounded-xl px-4 py-2.5 text-sm text-white focus:ring-1 focus:ring-cerulean outline-none">
+                <input type="tel" placeholder="WhatsApp" required class="w-full bg-white/[.04] border border-white/[.08] rounded-xl px-4 py-2.5 text-sm text-white focus:ring-1 focus:ring-cerulean outline-none">
+                <textarea placeholder="Mensaje (opcional)" rows="2" class="w-full bg-white/[.04] border border-white/[.08] rounded-xl px-4 py-2.5 text-sm text-white focus:ring-1 focus:ring-cerulean outline-none resize-none"></textarea>
+                <button type="submit" class="w-full bg-white/10 hover:bg-white/20 text-white font-medium py-2.5 rounded-xl transition text-sm">Enviar Consulta</button>
+              </form>
+              <div class="mt-2 flex items-center gap-2 text-[10px] text-frost/70">
+                <i data-lucide="shield-check" class="w-3 h-3"></i> Datos protegidos bajo Ley 172-13. Sin spam.
+              </div>
+            </div>
+          </div>
+
+          <!-- AGENT CARD -->
+          <div class="glass rounded-2xl p-5 flex items-center gap-4">
+            <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=100&q=80" class="w-14 h-14 rounded-full object-cover border-2 border-cerulean/50">
+            <div>
+              <h4 class="font-bold">Andrés Castillo</h4>
+              <p class="text-xs text-frost">Platinum Agent · 8 años exp.</p>
+              <div class="flex items-center gap-1 text-xs text-amber-400 mt-1">
+                <i data-lucide="star" class="w-3 h-3 fill-current"></i>
+                <i data-lucide="star" class="w-3 h-3 fill-current"></i>
+                <i data-lucide="star" class="w-3 h-3 fill-current"></i>
+                <i data-lucide="star" class="w-3 h-3 fill-current"></i>
+                <span class="text-white ml-1">4.9</span>
+              </div>
+              <button class="mt-2 text-xs text-cerulean hover:underline">Ver perfil completo →</button>
+            </div>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <!-- MODALS -->
+  <!-- Booking -->
+  <div id="bookingModal" class="fixed inset-0 z-[60] hidden items-center justify-center p-4">
+    <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="closeModal('booking')"></div>
+    <div class="relative w-full max-w-md bg-[#15181e] rounded-2xl border border-white/10 p-6 fade-in">
+      <button onclick="closeModal('booking')" class="absolute top-4 right-4 p-2 hover:bg-white/10 rounded-full"><i data-lucide="x"></i></button>
+      <h3 class="text-xl font-bold mb-1">Agendar Visita</h3>
+      <p class="text-sm text-frost mb-4">Selecciona fecha y hora para una visita presencial o virtual.</p>
+      <form id="contactForm" action="https://formspree.io/f/mbdwzlrl" method="POST" class="space-y-5">
+         <input type="hidden" name="_subject" value="Nuevo Lead OrizonRD">
+              <input type="hidden" name="_next" value="dashboard.html">
+        <input type="date" required class="w-full bg-white/[.04] border border-white/[.08] rounded-xl px-4 py-2.5 text-sm text-white outline-none focus:border-cerulean">
+        <select required class="w-full bg-white/[.04] border border-white/[.08] rounded-xl px-4 py-2.5 text-sm text-white outline-none focus:border-cerulean">
+          <option>Seleccionar horario</option>
+          <option>09:00 - 10:00</option>
+          <option>10:00 - 11:00</option>
+          <option>11:00 - 12:00</option>
+          <option>15:00 - 16:00</option>
+          <option>16:00 - 17:00</option>
+        </select>
+        <button type="submit" class="w-full bg-cerulean hover:bg-cerulean/90 text-onyx font-bold py-3 rounded-xl transition">Confirmar Cita</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- 360 Tour -->
+  <div id="tourModal" class="fixed inset-0 z-[60] hidden items-center justify-center p-4">
+    <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="closeModal('tour')"></div>
+    <div class="relative w-full max-w-3xl bg-onyx rounded-2xl border border-white/10 p-2 fade-in">
+      <button onclick="closeModal('tour')" class="absolute top-4 right-4 z-10 p-2 bg-black/40 rounded-full hover:bg-black/60"><i data-lucide="x"></i></button>
+      <div class="aspect-video bg-white/5 rounded-xl flex flex-col items-center justify-center text-frost">
+        <i data-lucide="camera-3d" class="w-12 h-12 mb-3 opacity-50"></i>
+        <p class="font-medium">Tour Virtual 360°</p>
+        <p class="text-sm opacity-60">Modelo 3D cargándose... (Integración Matterport/Visalo en desarrollo)</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+<footer class="bg-onyx border-t border-white/5 py-10">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-2 md:grid-cols-4 gap-8 text-sm">
+    <div>
+      <div class="flex items-center gap-2 mb-4">
+        <div class="w-6 h-6 bg-cerulean rounded flex items-center justify-center font-bold text-onyx text-xs">O</div>
+        <span class="font-bold">Orizon<span class="text-cerulean">RD</span></span>
+      </div>
+      <p class="text-frost text-xs leading-relaxed">Marketplace Inmobiliario Digital de la República Dominicana. Verificado, transparente y con datos reales.</p>
+    </div>
+    <div>
+      <h4 class="font-semibold mb-3">Plataforma</h4>
+      <ul class="space-y-2 text-frost text-xs">
+        <li><a href="propiedades.html" class="hover:text-white transition">Explorar Propiedades</a></li>
+        <li><a href="vende.html" class="hover:text-white transition">Publicar Propiedad</a></li>
+        <li><a href="asesoria.html" class="hover:text-white transition">Asesoría Certificada</a></li>
+        <li><a href="financiacion.html" class="hover:text-white transition">Calculadora Hipotecaria</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4 class="font-semibold mb-3">Soporte</h4>
+      <ul class="space-y-2 text-frost text-xs">
+        <li><a href="contacto.html" class="hover:text-white transition">Contacto</a></li>
+        <li><a href="#" class="hover:text-white transition">Centro de Ayuda</a></li>
+        <li><a href="#" class="hover:text-white transition">Términos y Privacidad</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4 class="font-semibold mb-3">Contacto</h4>
+      <p class="text-frost text-xs">hola@orizonrd.com</p>
+      <p class="text-frost text-xs">+1 (809) 000-0000</p>
+      <p class="text-frost text-xs mt-2">Santo Domingo, R.D.</p>
+    </div>
+  </div>
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8 pt-6 border-t border-white/5 text-center text-frost/60 text-xs">
+    © 2026 OrizonRD. Todos los derechos reservados. Cumple Ley 172-13 & 429-06
+  </div>
+</footer>
+
+  <script>
+    // --- GALLERY ---
+    let currentSlide = 0;
+    const totalSlides = 4;
+    function setSlide(index) {
+      currentSlide = index;
+      document.getElementById('galleryTrack').style.transform = `translateX(-${currentSlide * 100}%)`;
+      document.querySelectorAll('.thumb-btn').forEach((b, i) => b.classList.toggle('active', i === currentSlide));
+    }
+    function nextSlide() { setSlide(currentSlide === totalSlides - 1 ? 0 : currentSlide + 1); }
+    function prevSlide() { setSlide(currentSlide === 0 ? totalSlides - 1 : currentSlide - 1); }
+
+    // --- TABS ---
+    const tabContent = {
+      desc: `<p class="text-frost leading-relaxed">Espectacular villa de diseño contemporáneo ubicada en una de las zonas residenciales más exclusivas de Bávaro. Acabados de lujo, smart home integrado, piscina infinity privada con vistas al mar Caribe y acceso peatonal directo a playa blanca. Ideal para residencia vacacional o inversión de alto retorno.</p>
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-4">
+          <div class="bg-white/[.04] p-3 rounded-lg text-center"><p class="text-xs text-frost">Superficie</p><p class="font-bold">380 m²</p></div>
+          <div class="bg-white/[.04] p-3 rounded-lg text-center"><p class="text-xs text-frost">Habitaciones</p><p class="font-bold">4 Suite</p></div>
+          <div class="bg-white/[.04] p-3 rounded-lg text-center"><p class="text-xs text-frost">Baños</p><p class="font-bold">5</p></div>
+          <div class="bg-white/[.04] p-3 rounded-lg text-center"><p class="text-xs text-frost">Construcción</p><p class="font-bold">2024</p></div>
+        </div>`,
+      amenities: `<div class="grid grid-cols-2 md:grid-cols-3 gap-3">
+          <div class="flex items-center gap-3 p-3 bg-white/[.04] rounded-lg"><i data-lucide="waves" class="text-cerulean"></i><span class="text-sm">Piscina Infinity</span></div>
+          <div class="flex items-center gap-3 p-3 bg-white/[.04] rounded-lg"><i data-lucide="shield" class="text-cerulean"></i><span class="text-sm">Gated Community</span></div>
+          <div class="flex items-center gap-3 p-3 bg-white/[.04] rounded-lg"><i data-lucide="wifi" class="text-cerulean"></i><span class="text-sm">Smart Home 5G</span></div>
+          <div class="flex items-center gap-3 p-3 bg-white/[.04] rounded-lg"><i data-lucide="sun" class="text-cerulean"></i><span class="text-sm">Terraza Panorámica</span></div>
+          <div class="flex items-center gap-3 p-3 bg-white/[.04] rounded-lg"><i data-lucide="car" class="text-cerulean"></i><span class="text-sm">2 Garajes Techado</span></div>
+          <div class="flex items-center gap-3 p-3 bg-white/[.04] rounded-lg"><i data-lucide="zap" class="text-cerulean"></i><span class="text-sm">Generador Onan</span></div>
+        </div>`,
+      investment: `<div class="space-y-4">
+          <div class="flex justify-between items-center p-4 bg-white/[.04] rounded-xl border border-white/[.05]">
+            <div><p class="text-xs text-frost">ROI Proyectado</p><p class="text-xl font-bold text-cerulean">~8.5% anual</p></div>
+            <i data-lucide="trending-up" class="w-6 h-6 text-cerulean"></i>
+          </div>
+          <div class="flex justify-between items-center p-4 bg-white/[.04] rounded-xl border border-white/[.05]">
+            <div><p class="text-xs text-frost">Alquiler Vacacional Prom.</p><p class="text-xl font-bold">$2,200 / mes</p></div>
+            <i data-lucide="calendar" class="w-6 h-6 text-amber-400"></i>
+          </div>
+          <div class="bg-white/[.04] p-4 rounded-xl">
+            <p class="font-semibold text-sm mb-2">Opciones de Financiación Reales</p>
+            <ul class="text-sm text-frost space-y-1">
+              <li class="flex items-center gap-2"><i data-lucide="check" class="w-3 h-3 text-emerald-400"></i> Hasta 60% financiado por banco local</li>
+              <li class="flex items-center gap-2"><i data-lucide="check" class="w-3 h-3 text-emerald-400"></i> Tasa fija preferencial para expatriados</li>
+              <li class="flex items-center gap-2"><i data-lucide="check" class="w-3 h-3 text-emerald-400"></i> Gestión hipotecaria incluida en OrizonRD</li>
+            </ul>
+          </div>
+        </div>`,
+      legal: `<div class="space-y-4">
+          <div class="flex items-start gap-3 p-3 bg-emerald-500/10 border border-emerald-500/20 rounded-xl">
+            <i data-lucide="file-check" class="w-5 h-5 text-emerald-400 mt-0.5"></i>
+            <div>
+              <p class="font-semibold text-sm">Titulación Verificada (DGII/INESPRE)</p>
+              <p class="text-xs text-frost">Libre de gravámenes, hipotecas o litigios activos.</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-3 p-3 bg-white/[.04] rounded-xl">
+            <i data-lucide="code" class="w-5 h-5 text-frost mt-0.5"></i>
+            <div>
+              <p class="font-semibold text-sm">Código Rastreable</p>
+              <p class="text-xs font-mono bg-black/30 px-2 py-1 rounded mt-1 inline-block">ORZ-RD-8842-VLT</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-3 p-3 bg-white/[.04] rounded-xl">
+            <i data-lucide="user-check" class="w-5 h-5 text-frost mt-0.5"></i>
+            <div>
+              <p class="font-semibold text-sm">Notario Asignado</p>
+              <p class="text-xs text-frost">Lic. Carlos Mejía (Col. RD-992) · Acompañamiento completo hasta cierre.</p>
+            </div>
+          </div>
+          <a href="#" class="block w-full text-center py-2 border border-white/10 rounded-xl text-sm hover:bg-white/5 transition">Descargar Dossier Legal (PDF)</a>
+        </div>`
+    };
+    function switchTab(tab) {
+      document.querySelectorAll('.tab-btn').forEach(b => {
+        b.classList.remove('text-cerulean', 'border-b-2', 'border-cerulean');
+        b.classList.add('text-frost');
+      });
+      event.target.classList.remove('text-frost');
+      event.target.classList.add('text-cerulean', 'border-b-2', 'border-cerulean');
+      document.getElementById('tab-content').innerHTML = tabContent[tab];
+      lucide.createIcons();
+    }
+    // Init first tab
+    document.getElementById('tab-content').innerHTML = tabContent.desc;
+
+    // --- MAP ---
+    document.addEventListener('DOMContentLoaded', () => {
+      lucide.createIcons();
+      const map = L.map('map').setView([18.560, -68.412], 14);
+      L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+        attribution: '© OpenStreetMap © CARTO', maxZoom: 19
+      }).addTo(map);
+      L.marker([18.560, -68.412]).addTo(map)
+        .bindPopup(`<b>Villa Bávaro Premium</b><br><button onclick="openModal('booking')" class="mt-2 px-3 py-1 bg-cerulean text-onyx text-xs rounded font-bold">Agendar Visita</button>`);
+    });
+
+    // --- MODALS & FORMS ---
+    function openModal(id) { document.getElementById(id + 'Modal').classList.remove('hidden'); document.getElementById(id + 'Modal').classList.add('flex'); }
+    function closeModal(id) { document.getElementById(id + 'Modal').classList.add('hidden'); document.getElementById(id + 'Modal').classList.remove('flex'); }
+    
+    function handleForm(e, modalId) {
+      e.preventDefault();
+      const btn = e.target.querySelector('button[type="submit"]');
+      const originalText = btn.innerText;
+      btn.innerText = 'Enviando...';
+      btn.disabled = true;
+      
+      setTimeout(() => {
+        btn.innerText = '✓ Enviado correctamente';
+        btn.classList.remove('bg-cerulean', 'text-onyx');
+        btn.classList.add('bg-emerald-500', 'text-white');
+        if(modalId.includes('Modal')) closeModal(modalId.replace('Modal',''));
+        setTimeout(() => {
+          btn.innerText = originalText;
+          btn.disabled = false;
+          btn.classList.remove('bg-emerald-500', 'text-white');
+          btn.classList.add('bg-cerulean', 'text-onyx');
+          e.target.reset();
+        }, 2000);
+      }, 800);
+    }
+
+    // 360 Badge Click
+    document.querySelector('.group span').addEventListener('click', () => openModal('tour'));
+  </script>
+  <script>
+  const form = document.getElementById('contactForm');
+  if(form) {
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault(); // Evita recarga de página
+      
+      const btn = form.querySelector('button[type="submit"]');
+      const originalText = btn.innerHTML;
+      const originalClass = btn.className;
+      
+      // Estado: Enviando...
+      btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Enviando...`;
+      btn.disabled = true;
+      lucide.createIcons();
+
+      try {
+        const response = await fetch(form.action, {
+          method: 'POST',
+          body: new FormData(form),
+          headers: { 'Accept': 'application/json' }
+        });
+
+        if (response.ok) {
+          // Estado: Éxito
+          btn.innerHTML = `<i data-lucide="check" class="w-4 h-4"></i> ¡Enviado correctamente!`;
+          btn.className = 'w-full bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-3 rounded-xl transition flex items-center justify-center gap-2';
+          
+          // Redirige o muestra toast
+          setTimeout(() => {
+            window.location.href = form.querySelector('input[name="_next"]')?.value || 'dashboard.html';
+          }, 1200);
+        } else {
+          throw new Error('Error en el servidor');
+        }
+      } catch (error) {
+        // Estado: Error
+        btn.innerHTML = `<i data-lucide="alert-circle" class="w-4 h-4"></i> Error. Intenta de nuevo.`;
+        btn.className = 'w-full bg-red-500 hover:bg-red-600 text-white font-bold py-3 rounded-xl transition flex items-center justify-center gap-2';
+        setTimeout(() => {
+          btn.innerHTML = originalText;
+          btn.className = originalClass;
+          btn.disabled = false;
+          lucide.createIcons();
+        }, 2500);
+      }
+    });
+  }
+</script>
+  <script src="data.js"></script>
+  <script src="utils.js"></script>
+</body>
+</html>
