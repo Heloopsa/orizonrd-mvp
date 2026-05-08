@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Asesoría Certificada - OrizonRD</title>
+  
+<!-- FAVICON INLINE (sin archivos extra) -->
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%2300b4d8'/><text x='50%' y='55%' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-weight='bold' font-size='20' fill='%230f1115'>O</text></svg>">
+
+<!-- SEO BÁSICO -->
+<meta name="description" content="OrizonRD: El primer marketplace inmobiliario de República Dominicana con verificación legal, datos reales y agentes certificados. Compra, vende o invierte con confianza.">
+<meta name="keywords" content="inmuebles republica dominicana, venta casas punta cana, apartamento santo domingo, invertir en rd, orizonrd, propiedades verificadas">
+<meta name="author" content="OrizonRD">
+<meta name="robots" content="index, follow">
+
+<!-- OPEN GRAPH (WhatsApp, LinkedIn, Facebook) -->
+<meta property="og:title" content="OrizonRD — Marketplace Inmobiliario Verificado">
+<meta property="og:description" content="Compra, vende o invierte en República Dominicana con datos reales, verificación legal y agentes certificados.">
+<meta property="og:image" content="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1200&q=80">
+<meta property="og:url" content="https://orizonrd.vercel.app">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: { onyx: '#0f1115', cerulean: '#00b4d8', frost: '#e0e7ff', onyxLight: '#1a1d24' },
+          fontFamily: { sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'] }
+        }
+      }
+    }
+  </script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <style>
+    :root { --glass-bg: rgba(255,255,255,0.03); --glass-border: rgba(255,255,255,0.08); }
+    .glass { background: var(--glass-bg); backdrop-filter: blur(12px); border: 1px solid var(--glass-border); }
+    .glass-strong { background: rgba(15,17,21,0.85); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.1); }
+    
+    select option { background-color: #0f1115; color: #ffffff; }
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: #0f1115; }
+    ::-webkit-scrollbar-thumb { background: #1e2028; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #2d3748; }
+
+    .fade-in { animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+    
+    .step-indicator.active { background-color: #00b4d8; border-color: #00b4d8; }
+    .step-indicator.completed { background-color: #00b4d8; border-color: #00b4d8; }
+    .timeline-line::before { content: ''; position: absolute; left: 50%; top: 0; bottom: 0; width: 2px; background: rgba(255,255,255,0.1); transform: translateX(-50%); }
+    .time-slot.selected { border-color: #00b4d8; background: rgba(0,180,216,0.15); color: #00b4d8; }
+    
+    .toast { transform: translateY(120%); transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
+    .toast.show { transform: translateY(0); }
+  </style>
+</head>
+<body class="bg-onyx text-white antialiased selection:bg-cerulean/30 selection:text-white">
+
+  <!-- NAVBAR -->
+<nav class="fixed top-0 left-0 right-0 z-50 glass-strong border-b border-white/5">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+    <a href="index.html" class="flex items-center gap-2">
+      <div class="w-8 h-8 bg-cerulean rounded-lg flex items-center justify-center font-bold text-onyx">O</div>
+      <span class="text-xl font-bold tracking-tight">Orizon<span class="text-cerulean">RD</span></span>
+    </a>
+    <div class="hidden md:flex items-center gap-6 text-sm text-frost">
+      <a href="propiedades.html" class="hover:text-white transition">Propiedades</a>
+      <a href="contacto.html" class="hover:text-white transition">Agentes</a>
+      <a href="asesoria.html" class="hover:text-white transition">Asesoría</a>
+      <a href="financiacion.html" class="hover:text-white transition">Financiación</a>
+      <a href="vende.html" class="bg-cerulean/10 text-cerulean px-4 py-2 rounded-full font-medium hover:bg-cerulean hover:text-onyx transition">Publicar</a>
+    </div>
+    <div class="flex items-center gap-3">
+      <a href="favoritos.html" class="text-frost hover:text-white transition"><i data-lucide="heart" class="w-5 h-5"></i></a>
+      <a href="dashboard.html" class="text-frost hover:text-white transition"><i data-lucide="user" class="w-5 h-5"></i></a>
+      <button class="md:hidden text-white"><i data-lucide="menu" class="w-5 h-5"></i></button>
+    </div>
+  </div>
+</nav>
+
+  <!-- HERO -->
+  <header class="pt-24 pb-12 bg-gradient-to-b from-onyx to-onyxLight/50">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-300 text-xs font-semibold mb-4">
+        <i data-lucide="shield-check" class="w-3.5 h-3.5"></i> Asesores certificados DGII & INESPRE
+      </div>
+      <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold leading-tight mb-4">
+        Toma decisiones seguras con <span class="text-cerulean">expertos locales</span>
+      </h1>
+      <p class="text-frost max-w-2xl mx-auto text-base sm:text-lg">
+        Consulta técnica personalizada antes de invertir, comprar o vender. Reportes detallados, análisis ROI y acompañamiento legal integrado.
+      </p>
+    </div>
+  </header>
+
+  <!-- MAIN CONTENT -->
+  <main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-16 fade-in">
+    
+    <!-- 1. SERVICE TIERS -->
+    <section>
+      <h2 class="text-2xl font-bold mb-6">Elige tu nivel de asesoría</h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="package-card glass rounded-2xl p-6 cursor-pointer hover:border-cerulean/30 transition relative" onclick="selectPackage(this, 'analisis')">
+          <div class="absolute top-4 right-4 bg-cerulean/20 text-cerulean text-xs font-bold px-2 py-1 rounded">POPULAR</div>
+          <h3 class="font-bold text-lg mb-1">Análisis de Inversión</h3>
+          <p class="text-sm text-frost mb-4">Ideal para compradores internacionales e inversores.</p>
+          <p class="text-2xl font-bold mb-4">$1,500 DOP <span class="text-sm text-frost font-normal">/ sesión</span></p>
+          <ul class="space-y-2 text-sm text-frost mb-6">
+            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-cerulean"></i> Proyección ROI & Cashflow</li>
+            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-cerulean"></i> Benchmark de zona ($/m²)</li>
+            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-cerulean"></i> Informe PDF ejecutativo</li>
+          </ul>
+        </div>
+        <div class="package-card glass rounded-2xl p-6 cursor-pointer hover:border-cerulean/30 transition relative" onclick="selectPackage(this, 'legal')">
+          <h3 class="font-bold text-lg mb-1">Asesoría Legal & Documental</h3>
+          <p class="text-sm text-frost mb-4">Para trámites de titulación, contratos y gravámenes.</p>
+          <p class="text-2xl font-bold mb-4">$2,200 DOP <span class="text-sm text-frost font-normal">/ sesión</span></p>
+          <ul class="space-y-2 text-sm text-frost mb-6">
+            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-cerulean"></i> Revisión DGII/Oficina Titulación</li>
+            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-cerulean"></i> Redacción/revisión de contrato</li>
+            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-cerulean"></i> Coordinación con notaría</li>
+          </ul>
+        </div>
+        <div class="package-card glass rounded-2xl p-6 cursor-pointer hover:border-cerulean/30 transition relative border-cerulean/30 shadow-lg shadow-cerulean/10" onclick="selectPackage(this, 'completo')">
+          <div class="absolute top-4 right-4 bg-white/10 text-white text-xs font-bold px-2 py-1 rounded">RECOMENDADO</div>
+          <h3 class="font-bold text-lg mb-1">Paquete Conciere</h3>
+          <p class="text-sm text-frost mb-4">Acompañamiento total desde la búsqueda hasta el cierre.</p>
+          <p class="text-2xl font-bold mb-4">$4,800 DOP <span class="text-sm text-frost font-normal">/ paquete</span></p>
+          <ul class="space-y-2 text-sm text-frost mb-6">
+            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-cerulean"></i> Todo lo anterior + negociación</li>
+            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-cerulean"></i> Gestión financiera pre-calificación</li>
+            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-cerulean"></i> Seguimiento post-cierre (30 días)</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- BOOKING WIZARD -->
+    <section class="glass rounded-2xl p-6 sm:p-8">
+      <!-- Steps Indicator -->
+      <div class="flex justify-between items-center mb-8 px-4">
+        <div class="flex flex-col items-center gap-2 flex-1"><div class="w-8 h-8 rounded-full border-2 flex items-center justify-center step-indicator active" id="dot-1">1</div><span class="text-xs text-frost hidden sm:block">Seleccionar</span></div>
+        <div class="flex-1 flex justify-center"><div class="h-0.5 w-full bg-white/10"></div></div>
+        <div class="flex flex-col items-center gap-2 flex-1"><div class="w-8 h-8 rounded-full border-2 flex items-center justify-center step-indicator" id="dot-2">2</div><span class="text-xs text-frost hidden sm:block">Agendar</span></div>
+        <div class="flex-1 flex justify-center"><div class="h-0.5 w-full bg-white/10"></div></div>
+        <div class="flex flex-col items-center gap-2 flex-1"><div class="w-8 h-8 rounded-full border-2 flex items-center justify-center step-indicator" id="dot-3">3</div><span class="text-xs text-frost hidden sm:block">Confirmar</span></div>
+      </div>
+
+      <!-- STEP 1: Package + Advisor -->
+      <div class="step-content active" id="step-1">
+        <h3 class="text-xl font-bold mb-4">¿Con quién y qué necesitas?</h3>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+          <div>
+            <label class="block text-[11px] uppercase tracking-wider text-frost font-semibold mb-1.5">Asesor certificado</label>
+            <div class="space-y-3 max-h-60 overflow-y-auto pr-2" id="advisorList">
+              <!-- JS rendered -->
+            </div>
+          </div>
+          <div>
+            <label class="block text-[11px] uppercase tracking-wider text-frost font-semibold mb-1.5">Objetivo de la consulta</label>
+            <textarea rows="5" id="consultGoal" placeholder="Describe brevemente tu proyecto, ubicación preferida, presupuesto y dudas específicas..." class="w-full bg-white/[.04] border border-white/[.08] rounded-xl px-4 py-3 text-sm text-white placeholder-frost/50 focus:outline-none focus:border-cerulean focus:ring-1 focus:ring-cerulean/30 transition resize-none"></textarea>
+            <div class="mt-3 flex items-start gap-2">
+              <input type="checkbox" id="uploadDocs" class="accent-cerulean mt-0.5">
+              <label for="uploadDocs" class="text-xs text-frost leading-tight">Adjuntar documentos previos (título, planos, presupuestos) para revisión anticipada. Máx 10MB.</label>
+            </div>
+            <label class="mt-2 block text-xs bg-white/5 border border-white/[.08] rounded-lg p-3 text-center cursor-pointer hover:bg-white/10 transition">
+              <i data-lucide="upload-cloud" class="w-5 h-5 mx-auto mb-1 text-frost"></i>
+              Seleccionar archivo
+              <input type="file" class="hidden" accept=".pdf,.doc,.docx,.jpg,.png">
+            </label>
+          </div>
+        </div>
+        <div class="flex justify-end">
+          <button onclick="nextStep(2)" class="bg-cerulean hover:bg-cerulean/90 text-onyx font-semibold px-6 py-3 rounded-xl transition flex items-center gap-2">Continuar al Calendario <i data-lucide="arrow-right" class="w-4 h-4"></i></button>
+        </div>
+      </div>
+
+      <!-- STEP 2: Schedule -->
+      <div class="step-content hidden" id="step-2">
+        <h3 class="text-xl font-bold mb-4">Selecciona fecha y método</h3>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+          <div>
+            <label class="block text-[11px] uppercase tracking-wider text-frost font-semibold mb-1.5">Fecha disponible</label>
+            <input type="date" id="bookingDate" min="" class="w-full bg-white/[.04] border border-white/[.08] rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-cerulean focus:ring-1 focus:ring-cerulean/30 transition [color-scheme:dark]">
+            <p class="text-xs text-frost mt-2">* Horarios sujetos a disponibilidad del asesor seleccionado</p>
+          </div>
+          <div>
+            <label class="block text-[11px] uppercase tracking-wider text-frost font-semibold mb-1.5">Método de consulta</label>
+            <div class="grid grid-cols-3 gap-3">
+              <label class="method-opt flex flex-col items-center gap-2 p-3 bg-white/[.04] border border-white/[.08] rounded-xl cursor-pointer hover:bg-white/[.08] transition has-[:checked]:border-cerulean has-[:checked]:bg-cerulean/10">
+                <input type="radio" name="method" value="video" class="accent-cerulean" checked>
+                <i data-lucide="video" class="w-5 h-5"></i>
+                <span class="text-xs">Videollamada</span>
+              </label>
+              <label class="method-opt flex flex-col items-center gap-2 p-3 bg-white/[.04] border border-white/[.08] rounded-xl cursor-pointer hover:bg-white/[.08] transition has-[:checked]:border-cerulean has-[:checked]:bg-cerulean/10">
+                <input type="radio" name="method" value="phone" class="accent-cerulean">
+                <i data-lucide="phone" class="w-5 h-5"></i>
+                <span class="text-xs">Teléfono</span>
+              </label>
+              <label class="method-opt flex flex-col items-center gap-2 p-3 bg-white/[.04] border border-white/[.08] rounded-xl cursor-pointer hover:bg-white/[.08] transition has-[:checked]:border-cerulean has-[:checked]:bg-cerulean/10">
+                <input type="radio" name="method" value="inperson" class="accent-cerulean">
+                <i data-lucide="map-pin" class="w-5 h-5"></i>
+                <span class="text-xs">Presencial</span>
+              </label>
+            </div>
+          </div>
+        </div>
+        <div class="mb-6">
+          <label class="block text-[11px] uppercase tracking-wider text-frost font-semibold mb-1.5">Horario disponible</label>
+          <div class="grid grid-cols-4 sm:grid-cols-6 gap-2" id="timeSlots">
+            <!-- JS rendered -->
+          </div>
+        </div>
+        <div class="flex justify-between">
+          <button onclick="nextStep(1)" class="text-frost hover:text-white font-medium px-4 py-2 transition">Atrás</button>
+          <button onclick="nextStep(3)" class="bg-cerulean hover:bg-cerulean/90 text-onyx font-semibold px-6 py-3 rounded-xl transition flex items-center gap-2">Revisar Reserva <i data-lucide="arrow-right" class="w-4 h-4"></i></button>
+        </div>
+      </div>
+
+      <!-- STEP 3: Confirm & Pay -->
+      <div class="step-content hidden" id="step-3">
+        <h3 class="text-xl font-bold mb-4">Resumen y Confianza</h3>
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div class="lg:col-span-2 space-y-4">
+            <div class="glass rounded-xl p-4 flex justify-between items-center">
+              <div><p class="text-sm text-frost">Paquete seleccionado</p><p class="font-bold" id="summaryPackage">-</p></div>
+              <p class="text-cerulean font-bold" id="summaryPrice">-</p>
+            </div>
+            <div class="glass rounded-xl p-4 flex justify-between items-center">
+              <div><p class="text-sm text-frost">Asesor asignado</p><p class="font-bold" id="summaryAdvisor">-</p></div>
+              <span class="text-xs bg-emerald-500/20 text-emerald-300 px-2 py-1 rounded">Disponible ✅</span>
+            </div>
+            <div class="glass rounded-xl p-4 flex justify-between items-center">
+              <div><p class="text-sm text-frost">Fecha y hora</p><p class="font-bold" id="summaryDateTime">-</p></div>
+              <div class="flex gap-2 text-frost"><i data-lucide="video"></i></div>
+            </div>
+            
+            <div class="space-y-3 pt-2">
+              <div class="flex items-start gap-3">
+                <input type="checkbox" id="termsCheck" required class="mt-1 accent-cerulean">
+                <label for="termsCheck" class="text-xs text-frost leading-tight">Acepto los <a href="#" class="text-cerulean underline">Términos de Servicio</a> y entiendo que esta consulta tiene fines orientativos técnicos y no constituye asesoría jurídica vinculante sin contrato de representación.</label>
+              </div>
+              <div class="flex items-start gap-3">
+                <input type="checkbox" id="recordConsent" checked class="mt-1 accent-cerulean">
+                <label for="recordConsent" class="text-xs text-frost leading-tight">Autorizo la grabación de seguridad de la sesión (solo interna, nunca compartida). Puedo solicitar su borrado después de 30 días.</label>
+              </div>
+            </div>
+
+            <button onclick="processPayment()" id="payBtn" class="w-full bg-cerulean hover:bg-cerulean/90 text-onyx font-bold py-3.5 rounded-xl transition flex items-center justify-center gap-2 mt-4">
+              <i data-lucide="lock" class="w-4 h-4"></i> Pagar y Confirmar Asesoría
+            </button>
+            <p class="text-[10px] text-center text-frost/60 mt-2 flex items-center justify-center gap-1"><i data-lucide="shield-check" class="w-3 h-3"></i> Pago seguro encriptado · Devolución garantizada si el asesor no responde en 2h</p>
+          </div>
+
+          <div class="glass rounded-2xl p-5 h-fit">
+            <h4 class="font-semibold mb-3 text-sm">Qué incluye tu sesión</h4>
+            <ul class="space-y-2 text-sm text-frost">
+              <li class="flex items-center gap-2"><i data-lucide="file-text" class="w-4 h-4 text-cerulean"></i> Informe técnico personalizado (PDF)</li>
+              <li class="flex items-center gap-2"><i data-lucide="clock" class="w-4 h-4 text-cerulean"></i> Sesión privada de 60 minutos</li>
+              <li class="flex items-center gap-2"><i data-lucide="message-square" class="w-4 h-4 text-cerulean"></i> Acceso al chat de seguimiento (30 días)</li>
+              <li class="flex items-center gap-2"><i data-lucide="download" class="w-4 h-4 text-cerulean"></i> Plantillas de contrato y checklist legal</li>
+            </ul>
+            <div class="mt-4 pt-4 border-t border-white/5 text-xs text-frost/70">
+              Factura fiscal válida para deducción (Ley 11-92) generada automáticamente.
+            </div>
+          </div>
+        </div>
+        <div class="flex justify-between mt-6">
+          <button onclick="nextStep(2)" class="text-frost hover:text-white font-medium px-4 py-2 transition">Atrás</button>
+          <div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PROCESS TIMELINE -->
+    <section>
+      <h2 class="text-2xl font-bold mb-8 text-center">Cómo funciona la asesoría</h2>
+      <div class="relative timeline-line grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 px-4">
+        <div class="relative flex flex-col items-center text-center">
+          <div class="w-12 h-12 bg-cerulean/20 rounded-full flex items-center justify-center text-cerulean mb-3"><i data-lucide="search-check" class="w-6 h-6"></i></div>
+          <h4 class="font-bold mb-1">1. Define tu objetivo</h4>
+          <p class="text-sm text-frost">Elige el paquete y explica tu caso específico.</p>
+        </div>
+        <div class="relative flex flex-col items-center text-center">
+          <div class="w-12 h-12 bg-cerulean/20 rounded-full flex items-center justify-center text-cerulean mb-3"><i data-lucide="user-check" class="w-6 h-6"></i></div>
+          <h4 class="font-bold mb-1">2. Match inteligente</h4>
+          <p class="text-sm text-frost">Sistema asigna al asesor experto en tu zona/tipo.</p>
+        </div>
+        <div class="relative flex flex-col items-center text-center">
+          <div class="w-12 h-12 bg-cerulean/20 rounded-full flex items-center justify-center text-cerulean mb-3"><i data-lucide="clipboard-list" class="w-6 h-6"></i></div>
+          <h4 class="font-bold mb-1">3. Investigación previa</h4>
+          <p class="text-sm text-frost">El asesor revisa documentación y prepara datos reales.</p>
+        </div>
+        <div class="relative flex flex-col items-center text-center">
+          <div class="w-12 h-12 bg-cerulean/20 rounded-full flex items-center justify-center text-cerulean mb-3"><i data-lucide="file-check" class="w-6 h-6"></i></div>
+          <h4 class="font-bold mb-1">4. Entrega & Cierre</h4>
+          <p class="text-sm text-frost">Recibes informe, acta firmada y canal de seguimiento.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="glass rounded-2xl p-6">
+      <h3 class="text-lg font-bold mb-4">Preguntas frecuentes</h3>
+      <div class="space-y-3" id="faqContainer"></div>
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+<footer class="bg-onyx border-t border-white/5 py-10">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-2 md:grid-cols-4 gap-8 text-sm">
+    <div>
+      <div class="flex items-center gap-2 mb-4">
+        <div class="w-6 h-6 bg-cerulean rounded flex items-center justify-center font-bold text-onyx text-xs">O</div>
+        <span class="font-bold">Orizon<span class="text-cerulean">RD</span></span>
+      </div>
+      <p class="text-frost text-xs leading-relaxed">Marketplace Inmobiliario Digital de la República Dominicana. Verificado, transparente y con datos reales.</p>
+    </div>
+    <div>
+      <h4 class="font-semibold mb-3">Plataforma</h4>
+      <ul class="space-y-2 text-frost text-xs">
+        <li><a href="propiedades.html" class="hover:text-white transition">Explorar Propiedades</a></li>
+        <li><a href="vende.html" class="hover:text-white transition">Publicar Propiedad</a></li>
+        <li><a href="asesoria.html" class="hover:text-white transition">Asesoría Certificada</a></li>
+        <li><a href="financiacion.html" class="hover:text-white transition">Calculadora Hipotecaria</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4 class="font-semibold mb-3">Soporte</h4>
+      <ul class="space-y-2 text-frost text-xs">
+        <li><a href="contacto.html" class="hover:text-white transition">Contacto</a></li>
+        <li><a href="#" class="hover:text-white transition">Centro de Ayuda</a></li>
+        <li><a href="#" class="hover:text-white transition">Términos y Privacidad</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4 class="font-semibold mb-3">Contacto</h4>
+      <p class="text-frost text-xs">hola@orizonrd.com</p>
+      <p class="text-frost text-xs">+1 (809) 000-0000</p>
+      <p class="text-frost text-xs mt-2">Santo Domingo, R.D.</p>
+    </div>
+  </div>
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8 pt-6 border-t border-white/5 text-center text-frost/60 text-xs">
+    © 2026 OrizonRD. Todos los derechos reservados. Cumple Ley 172-13 & 429-06
+  </div>
+</footer>
+
+  <!-- SUCCESS MODAL -->
+  <div id="successModal" class="fixed inset-0 z-[60] hidden items-center justify-center p-4">
+    <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="closeSuccess()"></div>
+    <div class="relative w-full max-w-md bg-[#15181e] rounded-2xl border border-white/10 p-6 text-center fade-in">
+      <div class="w-16 h-16 bg-emerald-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
+        <i data-lucide="check-circle" class="w-8 h-8 text-emerald-400"></i>
+      </div>
+      <h3 class="text-xl font-bold mb-2">¡Asesoría confirmada!</h3>
+      <p class="text-sm text-frost mb-6">Tu cita ha sido reservada. Recibirás un email con el enlace de acceso, el número de folio y las instrucciones técnicas.</p>
+      <div class="bg-white/5 rounded-xl p-3 text-xs text-frost mb-4">Folio: <span class="text-white font-mono">#ORZ-ASR-8842</span></div>
+      <button onclick="closeSuccess()" class="w-full bg-cerulean hover:bg-cerulean/90 text-onyx font-bold py-3 rounded-xl transition">Ir a mi Dashboard</button>
+    </div>
+  </div>
+
+  <!-- TOAST -->
+  <div id="toast" class="fixed bottom-6 right-6 z-50 toast glass-strong rounded-xl px-5 py-3 flex items-center gap-3 shadow-2xl">
+    <i data-lucide="check-circle" class="w-5 h-5 text-emerald-400"></i>
+    <span id="toastMsg" class="text-sm font-medium">Acción realizada</span>
+  </div>
+
+  <script>
+    // DATA
+    const advisors = [
+      { id: 1, name: "Lic. Andrés Castillo", role: "Analista Financiero", img: "https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=100&q=80", rating: 4.9, exp: "8 años", tags: ["ROI", "Punta Cana", "Luxury"] },
+      { id: 2, name: "Abg. María Rodríguez", role: "Especialista Legal", img: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=100&q=80", rating: 5.0, exp: "12 años", tags: ["Titulación", "CD", "Contratos"] },
+      { id: 3, name: "Ing. Jorge Peña", role: "Asesor Técnico", img: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=100&q=80", rating: 4.8, exp: "6 años", tags: ["Terrenos", "Samaná", "Desarrollo"] }
+    ];
+
+    const faqs = [
+      { q: "¿La asesoría reemplaza a un abogado?", a: "No. Es una consulta técnica informativa basada en datos públicos y experiencia de mercado. Para representar legalmente, se requiere contrato con estudio jurídico externo." },
+      { q: "¿Qué pasa si cancelo?", a: "Puedes reagendar sin costo hasta 24h antes. Cancelaciones tardías cobran el 50%. Si el asesor falla en responder, reembolso total garantizado." },
+      { q: "¿Los informes son válidos para bancos?", a: "Sirven como insumo valioso, pero las entidades financieras requieren dictámenes propios. Te conectamos con partners pre-aprobados." },
+      { q: "¿Cómo accedo a la grabación?", a: "Se guarda cifrada por 30 días en tu panel. Puedes descargarla antes del plazo o solicitar eliminación inmediata." }
+    ];
+
+    // STATE
+    let currentStep = 1;
+    let selectedPackage = null;
+    let selectedAdvisor = null;
+    let selectedTime = null;
+
+    // INIT
+    document.addEventListener('DOMContentLoaded', () => {
+      lucide.createIcons();
+      renderAdvisors();
+      renderTimeSlots();
+      renderFAQ();
+      
+      // Set min date to today
+      document.getElementById('bookingDate').min = new Date().toISOString().split('T')[0];
+    });
+
+    // RENDERERS
+    function renderAdvisors() {
+      const list = document.getElementById('advisorList');
+      list.innerHTML = advisors.map(a => `
+        <div class="advisor-card flex items-center gap-3 p-3 bg-white/[.04] border border-white/[.08] rounded-xl cursor-pointer hover:bg-white/[.08] transition ${selectedAdvisor === a.id ? 'border-cerulean bg-cerulean/10' : ''}" onclick="selectAdvisor(${a.id})">
+          <img src="${a.img}" class="w-10 h-10 rounded-full object-cover">
+          <div class="flex-1">
+            <p class="text-sm font-semibold">${a.name}</p>
+            <p class="text-xs text-frost">${a.role} · ${a.exp}</p>
+            <div class="flex gap-1 mt-1">${a.tags.slice(0,2).map(t => `<span class="text-[10px] bg-white/5 px-1.5 py-0.5 rounded">${t}</span>`).join('')}</div>
+          </div>
+          <div class="text-xs text-amber-400 flex items-center gap-1"><i data-lucide="star" class="w-3 h-3 fill-current"></i>${a.rating}</div>
+        </div>
+      `).join('');
+      lucide.createIcons();
+    }
+
+    function renderTimeSlots() {
+      const slots = ['09:00','10:00','11:00','13:00','14:00','15:00','16:00','17:00'];
+      document.getElementById('timeSlots').innerHTML = slots.map(s => `
+        <button type="button" onclick="selectTime(this, '${s}')" class="time-slot text-sm py-2 px-1 border border-white/[.1] rounded-lg text-center hover:bg-white/[.05] transition ${selectedTime === s ? 'selected' : ''}">${s}</button>
+      `).join('');
+    }
+
+    function renderFAQ() {
+      const container = document.getElementById('faqContainer');
+      container.innerHTML = faqs.map((f, i) => `
+        <div class="border-b border-white/5 pb-2 last:border-0">
+          <button onclick="toggleFAQ(${i})" class="w-full flex justify-between items-center text-left py-2 text-sm font-medium hover:text-cerulean transition">
+            ${f.q}
+            <i data-lucide="chevron-down" class="w-4 h-4 text-frost transition-transform" id="faq-icon-${i}"></i>
+          </button>
+          <div class="accordion-content text-xs text-frost/80 leading-relaxed pt-1" id="faq-body-${i}">
+            ${f.a}
+          </div>
+        </div>
+      `).join('');
+      lucide.createIcons();
+    }
+
+    // ACTIONS
+    function selectPackage(el, pkg) {
+      document.querySelectorAll('.package-card').forEach(c => c.classList.remove('border-cerulean/30','shadow-lg','shadow-cerulean/10'));
+      el.classList.add('border-cerulean/30','shadow-lg','shadow-cerulean/10');
+      const prices = { analisis: '$1,500 DOP', legal: '$2,200 DOP', completo: '$4,800 DOP' };
+      const names = { analisis: 'Análisis de Inversión', legal: 'Asesoría Legal & Documental', completo: 'Paquete Conciere' };
+      selectedPackage = { id: pkg, name: names[pkg], price: prices[pkg] };
+    }
+
+    function selectAdvisor(id) {
+      selectedAdvisor = id;
+      renderAdvisors();
+    }
+
+    function selectTime(el, time) {
+      document.querySelectorAll('.time-slot').forEach(b => b.classList.remove('selected'));
+      el.classList.add('selected');
+      selectedTime = time;
+    }
+
+    function nextStep(step) {
+      // Validation
+      if (currentStep === 1 && (!selectedPackage || !selectedAdvisor)) {
+        showToast('Selecciona un paquete y un asesor primero 📋');
+        return;
+      }
+      if (currentStep === 2 && (!document.getElementById('bookingDate').value || !selectedTime)) {
+        showToast('Elige fecha y horario válido ⏰');
+        return;
+      }
+      if (currentStep === 3 && !document.getElementById('termsCheck').checked) {
+        showToast('Debes aceptar los términos para continuar 🔒');
+        return;
+      }
+
+      currentStep = step;
+      updateSteps();
+      window.scrollTo({ top: 300, behavior: 'smooth' });
+    }
+
+    function updateSteps() {
+      document.querySelectorAll('.step-content').forEach(c => c.classList.add('hidden'));
+      document.getElementById(`step-${currentStep}`).classList.remove('hidden');
+      document.getElementById(`step-${currentStep}`).classList.add('active');
+      
+      document.querySelectorAll('.step-indicator').forEach((d, i) => {
+        d.classList.remove('active', 'completed');
+        if (i + 1 < currentStep) d.classList.add('completed');
+        if (i + 1 === currentStep) d.classList.add('active');
+      });
+
+      if (currentStep === 3) {
+        document.getElementById('summaryPackage').textContent = selectedPackage.name;
+        document.getElementById('summaryPrice').textContent = selectedPackage.price;
+        document.getElementById('summaryAdvisor').textContent = advisors.find(a => a.id === selectedAdvisor).name;
+        document.getElementById('summaryDateTime').textContent = `${new Date(document.getElementById('bookingDate').value).toLocaleDateString('es-DO')} · ${selectedTime}`;
+      }
+    }
+
+    function processPayment() {
+      const btn = document.getElementById('payBtn');
+      btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Procesando pago seguro...`;
+      btn.disabled = true;
+      lucide.createIcons();
+
+      setTimeout(() => {
+        btn.innerHTML = `<i data-lucide="check" class="w-4 h-4"></i> ¡Pago exitoso!`;
+        btn.classList.remove('bg-cerulean', 'text-onyx');
+        btn.classList.add('bg-emerald-500', 'text-white');
+        lucide.createIcons();
+        setTimeout(() => {
+          document.getElementById('successModal').classList.remove('hidden');
+          document.getElementById('successModal').classList.add('flex');
+        }, 500);
+      }, 1800);
+    }
+
+    function closeSuccess() {
+      document.getElementById('successModal').classList.add('hidden');
+      document.getElementById('successModal').classList.remove('flex');
+      // Reset form
+      setTimeout(() => location.reload(), 300);
+    }
+
+    function toggleFAQ(i) {
+      const body = document.getElementById(`faq-body-${i}`);
+      const icon = document.getElementById(`faq-icon-${i}`);
+      if (body.classList.contains('open')) {
+        body.classList.remove('open');
+        icon.style.transform = 'rotate(0deg)';
+      } else {
+        document.querySelectorAll('.accordion-content').forEach(el => el.classList.remove('open'));
+        document.querySelectorAll('[id^="faq-icon-"]').forEach(el => el.style.transform = 'rotate(0deg)');
+        body.classList.add('open');
+        icon.style.transform = 'rotate(180deg)';
+      }
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      document.getElementById('toastMsg').textContent = msg;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 3000);
+    }
+  </script>
+  <script>
+  const form = document.getElementById('contactForm');
+  if(form) {
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault(); // Evita recarga de página
+      
+      const btn = form.querySelector('button[type="submit"]');
+      const originalText = btn.innerHTML;
+      const originalClass = btn.className;
+      
+      // Estado: Enviando...
+      btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Enviando...`;
+      btn.disabled = true;
+      lucide.createIcons();
+
+      try {
+        const response = await fetch(form.action, {
+          method: 'POST',
+          body: new FormData(form),
+          headers: { 'Accept': 'application/json' }
+        });
+
+        if (response.ok) {
+          // Estado: Éxito
+          btn.innerHTML = `<i data-lucide="check" class="w-4 h-4"></i> ¡Enviado correctamente!`;
+          btn.className = 'w-full bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-3 rounded-xl transition flex items-center justify-center gap-2';
+          
+          // Redirige o muestra toast
+          setTimeout(() => {
+            window.location.href = form.querySelector('input[name="_next"]')?.value || 'dashboard.html';
+          }, 1200);
+        } else {
+          throw new Error('Error en el servidor');
+        }
+      } catch (error) {
+        // Estado: Error
+        btn.innerHTML = `<i data-lucide="alert-circle" class="w-4 h-4"></i> Error. Intenta de nuevo.`;
+        btn.className = 'w-full bg-red-500 hover:bg-red-600 text-white font-bold py-3 rounded-xl transition flex items-center justify-center gap-2';
+        setTimeout(() => {
+          btn.innerHTML = originalText;
+          btn.className = originalClass;
+          btn.disabled = false;
+          lucide.createIcons();
+        }, 2500);
+      }
+    });
+  }
+</script>
+  <script src="data.js"></script>
+  <script src="utils.js"></script>
+</body>
+</html>
